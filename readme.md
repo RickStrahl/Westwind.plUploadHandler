@@ -35,56 +35,56 @@ The following example uses the plUpload jQueryQueryQueue component to upload
 images. The client code might look like this:
 
 ```javascript
-   // set up the uploader queue
-   $("#Uploader").pluploadQueue({
-        runtimes: 'html5,silverlight,flash,html4',   
-        url: 'ImageUploadHandler.ashx',
-        max_file_size: '1mb',
-        chunk_size: '100kb',
-        unique_names: false,
-        // Resize images on clientside if we can
-        resize: { width: 800, height: 600, quality: 90 },
-        // Specify what files to browse for
-        filters: [{ title: "Image files", extensions: "jpg,jpeg,gif,png" }],
-        flash_swf_url: 'scripts/plupload/plupload.flash.swf',
-        silverlight_xap_url: 'scripts/plupload/plupload.silverlight.xap',
-        multiple_queues: true,
-    });
+// set up the uploader queue
+$("#Uploader").pluploadQueue({
+    runtimes: 'html5,silverlight,flash,html4',   
+    url: 'ImageUploadHandler.ashx',
+    max_file_size: '1mb',
+    chunk_size: '100kb',
+    unique_names: false,
+    // Resize images on clientside if we can
+    resize: { width: 800, height: 600, quality: 90 },
+    // Specify what files to browse for
+    filters: [{ title: "Image files", extensions: "jpg,jpeg,gif,png" }],
+    flash_swf_url: 'scripts/plupload/plupload.flash.swf',
+    silverlight_xap_url: 'scripts/plupload/plupload.silverlight.xap',
+    multiple_queues: true,
+});
 
-    // get uploader instance
-    var uploader = $("#Uploader").pluploadQueue();      
+// get uploader instance
+var uploader = $("#Uploader").pluploadQueue();      
 
-    // bind uploaded event and display the image
-    // response.response returns the last response from server
-    // which is the URL to the image that was sent by OnUploadCompleted
-    uploader.bind("FileUploaded", function (upload, file, response) {
-        // remove the file from the list
-        upload.removeFile(file);
+// bind uploaded event and display the image
+// response.response returns the last response from server
+// which is the URL to the image that was sent by OnUploadCompleted
+uploader.bind("FileUploaded", function (upload, file, response) {
+    // remove the file from the list
+    upload.removeFile(file);
 
-        // Response.response returns server output from onUploadCompleted
-        // our code returns the url to the image so we can display it
-        var imageUrl = response.response;
+    // Response.response returns server output from onUploadCompleted
+    // our code returns the url to the image so we can display it
+    var imageUrl = response.response;
 
-        $("<img>").attr({ src: imageUrl })
-                  .click(function () {
-                      $("#ImageView").attr("src", imageUrl);
-                      setTimeout(function () {
-                          $("#ImagePreview").modalDialog()
-                                            .closable()
-                                            .draggable();
-                          $("#_ModalOverlay").click(function () {
-                              $("#ImagePreview").modalDialog("hide");
-                          });
-                      }, 200);
-                  })
-                  .appendTo($("#ImageContainer"));
-    });
+    $("<img>").attr({ src: imageUrl })
+              .click(function () {
+                  $("#ImageView").attr("src", imageUrl);
+                  setTimeout(function () {
+                      $("#ImagePreview").modalDialog()
+                                        .closable()
+                                        .draggable();
+                      $("#_ModalOverlay").click(function () {
+                          $("#ImagePreview").modalDialog("hide");
+                      });
+                  }, 200);
+              })
+              .appendTo($("#ImageContainer"));
+});
 
-    // Error handler displays client side errors and transfer errors
-    // when you click on the error icons
-    uploader.bind("Error", function (upload, error) {
-        showStatus(error.message,3000,true);
-    });
+// Error handler displays client side errors and transfer errors
+// when you click on the error icons
+uploader.bind("Error", function (upload, error) {
+    showStatus(error.message,3000,true);
+});
 ```
 
 This code sets up the visual component and specifies that plUpload should
@@ -120,59 +120,59 @@ shown in the FileUploaded client script. Here the result written is simply
 the full URL to the newly uploaded and resized image:
 
 ```C#
-    public class ImageUploadHandler : plUploadFileHandler
+public class ImageUploadHandler : plUploadFileHandler
+{
+    const string ImageStoragePath = "~/UploadedImages";        
+    public static int ImageHeight = 480;
+
+    public ImageUploadHandler()
     {
-        const string ImageStoragePath = "~/UploadedImages";        
-        public static int ImageHeight = 480;
+        // Normally you'd set these values from config values
+        FileUploadPhysicalPath = "~/tempuploads";
+        MaxUploadSize = 2000000;
+    }       
 
-        public ImageUploadHandler()
-        {
-            // Normally you'd set these values from config values
-            FileUploadPhysicalPath = "~/tempuploads";
-            MaxUploadSize = 2000000;
-        }       
+    protected override void OnUploadCompleted(string fileName)
+    {
+        var Server = Context.Server;
 
-        protected override void OnUploadCompleted(string fileName)
-        {
-            var Server = Context.Server;
-
-            // Physical Path is auto-transformed
-            var path = FileUploadPhysicalPath;
-            var fullUploadedFileName = Path.Combine(path, fileName);
+        // Physical Path is auto-transformed
+        var path = FileUploadPhysicalPath;
+        var fullUploadedFileName = Path.Combine(path, fileName);
 
             
-            var ext = Path.GetExtension(fileName).ToLower();
-            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")            
-            {
-                WriteErrorResponse("Invalid file format uploaded.");
-                return;
-            }
-
-            // Typically you'd want to ensure that the filename is unique
-            // Some ID from the database to correlate - here I use a static img_ prefix
-            string generatedFilename = "img_" + fileName;
-            
-            try
-            {
-                // resize the image and write out in final image folder
-                ResizeImage(fullUploadedFileName, Server.MapPath("~/uploadedImages/"+ generatedFilename), ImageHeight);
-                
-                // delete the temp file
-                File.Delete(fullUploadedFileName);
-            }
-            catch(Exception ex)
-            {
-                WriteErrorResponse("Unable to write out uploaded file: " + ex.Message);
-                return;
-            }
-
-            string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
-
-            // return something that makes sense to your front-end UI
-            // here I return the URL to the image.
-            Response.Write(finalImageUrl);
+        var ext = Path.GetExtension(fileName).ToLower();
+        if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")            
+        {
+            WriteErrorResponse("Invalid file format uploaded.");
+            return;
         }
+
+        // Typically you'd want to ensure that the filename is unique
+        // Some ID from the database to correlate - here I use a static img_ prefix
+        string generatedFilename = "img_" + fileName;
+            
+        try
+        {
+            // resize the image and write out in final image folder
+            ResizeImage(fullUploadedFileName, Server.MapPath("~/uploadedImages/"+ generatedFilename), ImageHeight);
+                
+            // delete the temp file
+            File.Delete(fullUploadedFileName);
+        }
+        catch(Exception ex)
+        {
+            WriteErrorResponse("Unable to write out uploaded file: " + ex.Message);
+            return;
+        }
+
+        string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
+
+        // return something that makes sense to your front-end UI
+        // here I return the URL to the image.
+        Response.Write(finalImageUrl);
     }
+}
 ```
 
 That's all that's needed... if there's an error you want to return, call WriteErrorResponse() with
