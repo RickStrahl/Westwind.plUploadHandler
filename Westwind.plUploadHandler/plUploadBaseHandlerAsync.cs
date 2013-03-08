@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Westwind.plUpload
@@ -20,24 +21,19 @@ namespace Westwind.plUpload
 
         public System.IAsyncResult BeginProcessRequest(HttpContext context, System.AsyncCallback cb, object extraData)
         {
-            processRequest = new Action<HttpContext>(ProcessRequest);
-            return processRequest.BeginInvoke(context, cb, extraData);
+            // call ProcessRequest method asynchronously            
+            Task task = Task.Factory.StartNew(
+                (ctx) => ProcessRequest(ctx as HttpContext),
+                context);
+
+            return task;               
+
         }
 
         public void EndProcessRequest(System.IAsyncResult result)
-        {            
-            if (result != null)
-            {
-                try
-                {
-                    processRequest.EndInvoke(result);
-                    processRequest = null;
-                }
-                catch (Exception ex)
-                {
-                    string message = ex.Message;                    
-                }
-            }
+        {
+            Task task = (Task)result;
+            task.Wait();
         }
         # endregion
     }
