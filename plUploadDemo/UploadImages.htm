@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>plUpload Image Upload Sample</title>
+    <link href="Css/Reset.css" rel="stylesheet" type="text/css" />
+    <link href="Css/Standard.css" rel="stylesheet" type="text/css" />        
+
+    <link href="scripts/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css" rel="stylesheet"
+          type="text/css" />
+  
+    <style>
+        #ImageContainer img {
+            margin: 10px;
+            vertical-align: top;
+            height: 165px;
+            border-radius: 5px;
+            -webkit-box-shadow: 2px 2px 4px #535353;
+            box-shadow: 2px 2px 4px #535353;
+        }
+        #Uploader_filelist
+        {
+            height: 140px;
+        }
+        #ImagePreview {            
+            padding: 20px;            
+            background: white;
+            position: absolute; 
+            border-radius: 8px;            
+        }
+        #ImagePreview img{                        
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <h1>plUpload Image Upload Demo</h1>
+    <div class="toolbarcontainer">
+        <a href="UploadImages.htm" class="hoverbutton"><span class="icon-refresh"></span> Refresh</a>
+    </div>
+    <div class="descriptionheader">
+        This example lets you upload images to the Web server and stores
+        them in the TempUploads folder first, then resizes and moves the final files
+        to the /UploadedImages folders. If you're running this example in full IIS rather
+        make sure you give the Application Pool user (Network Service usually) read/write rights in the
+        upload folders so files can be copied there.
+    </div>
+
+    <div class="containercontent">
+    
+        <div id="ImageContainer">
+               
+        </div>
+
+        <div id="Uploader">        
+        </div>        
+
+        <div id="ImagePreview" style="display:none">
+            <img id="ImageView"  />
+        </div>
+
+    </div>
+
+    <script src="scripts/jquery.min.js"></script>
+
+    <script src="scripts/plupload/plupload.full.js"></script>    
+    <script src="scripts/plupload/jquery.plupload.queue/jquery.plupload.queue.js"></script>
+
+    <!-- just for this demo: draggable, closable, modalDialog -->
+    <script src="Scripts/ww.jquery.min.js"></script>    
+        
+    <!-- page specific JavaScript that puts up plUpload component -->
+    <script src="UploadImages.js"></script>
+
+    </form>
+</body>
+</html>
