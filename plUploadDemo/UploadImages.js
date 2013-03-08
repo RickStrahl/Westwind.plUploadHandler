@@ -27,7 +27,6 @@ $(document).ready(function () {
     // response.response returns the last response from server
     // which is the URL to the image that was sent by OnUploadCompleted
     uploader.bind("FileUploaded", function (upload, file, response) {
-
         // remove the file from the list
         upload.removeFile(file);
 
