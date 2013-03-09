@@ -19,21 +19,38 @@ namespace Westwind.plUpload
         /// </summary>
         Action<HttpContext> processRequest;
 
+        TaskCompletionSource<object> tcs;
+
         public System.IAsyncResult BeginProcessRequest(HttpContext context, System.AsyncCallback cb, object extraData)
         {
+            tcs = new TaskCompletionSource<object>(context);                     
+            
             // call ProcessRequest method asynchronously            
-            Task task = Task.Factory.StartNew(
-                (ctx) => ProcessRequest(ctx as HttpContext),
-                context);
+            var task = Task<object>.Factory.StartNew(
+                (ctx) => {
+                    ProcessRequest(ctx as HttpContext);
+                    
+                    if (cb != null)
+                        cb(tcs.Task);
 
-            return task;               
+                    return null;
+                },context)
+            .ContinueWith(tsk =>
+            {
+                if (tsk.IsFaulted)
+                    tcs.SetException(tsk.Exception);
+                else
+                    // Not returning a value, but TCS needs one so just use null
+                    tcs.SetResult(null);
 
+            },TaskContinuationOptions.ExecuteSynchronously);
+
+            
+            return tcs.Task;
         }
 
         public void EndProcessRequest(System.IAsyncResult result)
         {
-            Task task = (Task)result;
-            task.Wait();
         }
         # endregion
     }

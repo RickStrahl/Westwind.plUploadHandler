@@ -10,7 +10,7 @@ namespace Westwind.plUpload
     /// Depending on the unique_names flag on the plUpload component,
     /// the filename will either be unique or the original filename.
     /// </summary>
-    public class plUploadFileHandler : plUploadBaseHandler
+    public class plUploadFileHandler : plUploadBaseHandlerAsync
     {
         /// <summary>
         /// Physical folder location where the file will be uploaded.
