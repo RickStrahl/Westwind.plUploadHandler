@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Web;
 using plUploadHandler.Properties;
+using System.Web.Script.Serialization;
 
 namespace Westwind.plUpload
 {
@@ -18,12 +19,12 @@ namespace Westwind.plUpload
     /// with the received chunks like stream them to disk 
     /// or a database.
     /// </summary>
-    public abstract class plUploadBaseHandler : IHttpHandler        
+    public abstract class plUploadBaseHandler : IHttpHandler
     {
         // Don't use HttpContext.Current - Async handlers don't see it
         protected HttpContext Context;
         protected HttpResponse Response;
-        protected HttpRequest Request;        
+        protected HttpRequest Request;
 
 
         public bool IsReusable
@@ -42,8 +43,8 @@ namespace Westwind.plUpload
         {
             Context = context;
             Request = context.Request;
-            Response = context.Response;            
-            
+            Response = context.Response;
+
             // Check to see whether there are uploaded files to process them
             if (Request.Files.Count > 0)
             {
@@ -77,6 +78,7 @@ namespace Westwind.plUpload
                     }
 
                     OnUploadCompleted(fileName);
+
                     return;
                 }
                 else
@@ -122,21 +124,43 @@ namespace Westwind.plUpload
         /// </summary>
         /// <param name="message"></param>
         /// <param name="statusCode"></param>
-        protected void WriteErrorResponse(string message, int statusCode = 500, bool endResponse = false)
+        /// <param name="endResponse"></param>
+        protected void WriteErrorResponse(string message, int statusCode = 100, bool endResponse = false)
         {
             Response.ContentType = "application/json";
-            Response.StatusCode = 200; //statusCode;            
+            Response.StatusCode = 500;
 
             // Write out raw JSON string to avoid JSON requirement
-            Response.Write("{\"jsonrpc\" : \"2.0\", \"error\" : {\"code\": 101, \"message\": \"" + message + "\"}, \"id\" : \"id\"}");
+            Response.Write("{\"jsonrpc\" : \"2.0\", \"error\" : {\"code\": " + statusCode.ToString() + ", \"message\": " + JsonEncode(message) + "}, \"id\" : \"id\"}");
             if (endResponse)
                 Response.End();
         }
 
-        protected void WriteSucessResponse()
+        /// <summary>
+        /// Sends a message to the client for each chunk
+        /// </summary>
+        /// <param name="message"></param>
+        protected void WriteSucessResponse(string message = null)
         {
             Response.ContentType = "application/json";
-            Response.Write("{\"jsonrpc\" : \"2.0\", \"result\" : null, \"id\" : \"id\"}");
+            string json = null;
+            if (!string.IsNullOrEmpty(message))
+                json = JsonEncode(message);
+            else
+                json = "null";
+
+            Response.Write("{\"jsonrpc\" : \"2.0\", \"result\" : " + json + ", \"id\" : \"id\"}");
+        }
+
+        /// <summary>
+        /// Use this method to write the final output in the OnUploadCompleted method
+        /// to pass back a result string to the client when a file has completed
+        /// uploading
+        /// </summary>
+        /// <param name="data"></param>
+        protected void WriteUploadCompletedMessage(string data)
+        {
+            Response.Write(data);
         }
 
         /// <summary>
@@ -184,6 +208,17 @@ namespace Westwind.plUpload
         protected virtual bool OnUploadChunk(Stream chunkStream, int chunk, int chunks, string fileName)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Encode JavaScript
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected string JsonEncode(object value)
+        {
+            var ser = new JavaScriptSerializer();
+            return ser.Serialize(value);
         }
     }
 }

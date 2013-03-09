@@ -10,7 +10,7 @@ namespace Westwind.plUpload
     /// Depending on the unique_names flag on the plUpload component,
     /// the filename will either be unique or the original filename.
     /// </summary>
-    public class plUploadFileHandler : plUploadBaseHandlerAsync
+    public class plUploadFileHandler : plUploadBaseHandler
     {
         /// <summary>
         /// Physical folder location where the file will be uploaded.
@@ -61,13 +61,33 @@ namespace Westwind.plUpload
                 }
                 catch (Exception ex)
                 {
-                    throw new InvalidDataException(Resources.UploadDirectoryDoesnTExistAndCouldnTCreate);                    
-                }                
+                    WriteErrorResponse(Resources.UploadDirectoryDoesnTExistAndCouldnTCreate);
+                    return false;
+                }
             }
 
-            using (var stream = new FileStream(Path.Combine(path, uploadedFilename), (chunk == 0) ? FileMode.CreateNew : FileMode.Append))
+            string uploadFilePath = Path.Combine(path, uploadedFilename);
+            if (chunk == 0)
             {
+                if (File.Exists(uploadFilePath))
+                    File.Delete(uploadFilePath);
+            }
+
+            Stream stream = null;
+            try
+            {
+                stream = new FileStream(uploadFilePath, (chunk == 0) ? FileMode.CreateNew : FileMode.Append);
                 chunkStream.CopyTo(stream, 16384);
+            }
+            catch
+            {
+                WriteErrorResponse(Resources.UnableToWriteOutFile);
+                return false;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Dispose();
             }
 
             return true;
