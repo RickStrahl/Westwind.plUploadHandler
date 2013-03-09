@@ -1,5 +1,5 @@
 #Using the plUpload Component with ASP.NET Article Code
-[Sample code for Blog Post ](http://www.west-wind.com/weblog/)
+[Sample code for Blog Post ](http://www.west-wind.com/weblog/posts/2013/Mar/12/Using-plUpload-to-upload-Files-with-ASPNET)
 
 This project provides a base HTTP and HTTP Async Handler for capturing
 plUpload based file uploads with ASP.NET. The base implementation provides 
@@ -11,7 +11,7 @@ when it completes.
 ###Resources:###
 
 * [plUpload Website](http://www.plupload.com/)
-* [Using the plUpload Component Blog Post](http://www.west-wind.com/weblog)
+* [Using the plUpload Component Blog Post](http://www.west-wind.com/weblog/posts/2013/Mar/12/Using-plUpload-to-upload-Files-with-ASPNET)
 
 ### Sample Web Project Configuration###
 The Web application sample is an image uploader that stores images to file.

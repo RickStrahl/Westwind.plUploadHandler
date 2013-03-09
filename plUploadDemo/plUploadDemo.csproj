@@ -119,6 +119,7 @@
     <Content Include="Scripts\ww.jquery.min.js.map">
       <DependentUpon>ww.jquery.js</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\West Wind Site.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
