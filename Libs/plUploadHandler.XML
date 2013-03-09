@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>plUploadHandler</name>
+    </assembly>
+    <members>
+        <member name="T:Westwind.plUpload.plUploadBaseHandler">
+            <summary>
+            Base implementation of the plUpload HTTP Handler.
+            
+            The base handler doesn't handle storage in any way
+            it simply gets message event methods fired when 
+            the download is started, when a chunk arrives and when 
+            the download is completed.
+            
+            This abstract class should be subclassed to do something
+            with the received chunks like stream them to disk 
+            or a database.
+            </summary>
+        </member>
+        <member name="F:Westwind.plUpload.plUploadBaseHandler.MaxUploadSize">
+            <summary>
+            Maximum upload size in bytes
+            default: 0 = unlimited
+            </summary>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.WriteErrorResponse(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Writes out an error response
+            </summary>
+            <param name="message"></param>
+            <param name="statusCode"></param>
+            <param name="endResponse"></param>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.WriteSucessResponse(System.String)">
+            <summary>
+            Sends a message to the client for each chunk
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.WriteUploadCompletedMessage(System.String)">
+            <summary>
+            Use this method to write the final output in the OnUploadCompleted method
+            to pass back a result string to the client when a file has completed
+            uploading
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.OnUploadCompleted(System.String)">
+            <summary>
+            Completion handler called when the download completes
+            </summary>
+            <param name="fileName"></param>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.OnUploadChunkStarted(System.Int32,System.Int32,System.String)">
+            <summary>
+            Fired on every chunk that is sent
+            </summary>
+            <param name="chunk"></param>
+            <param name="chunks"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.OnUploadStarted(System.Int32,System.Int32,System.String)">
+            <summary>
+            Fired on the first chunk sent to the server - allows checking for authentication
+            file size limits etc.
+            </summary>
+            <param name="chunk"></param>
+            <param name="chunks"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.OnUploadChunk(System.IO.Stream,System.Int32,System.Int32,System.String)">
+            <summary>
+            Fired as the upload happens
+            </summary>
+            <param name="chunkStream"></param>
+            <param name="chunk"></param>
+            <param name="chunks"></param>
+            <param name="name"></param>
+            <returns>return true on success false on failure</returns>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadBaseHandler.JsonEncode(System.Object)">
+            <summary>
+            Encode JavaScript
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.plUpload.plUploadBaseHandlerAsync">
+            <summary>
+            Same implementation as above but implements the Async request processsing.
+            Quite useful in these scenarios since typical operations from file upload
+            are IO operations - streaming to file or disk which tend to be relatively
+            </summary>
+        </member>
+        <member name="F:Westwind.plUpload.plUploadBaseHandlerAsync.processRequest">
+            <summary>
+            Delegate to ProcessRequest method
+            </summary>
+        </member>
+        <member name="T:Westwind.plUpload.plUploadFileHandler">
+            <summary>
+            Upload handler that uploads files into a specific folder.
+            Depending on the unique_names flag on the plUpload component,
+            the filename will either be unique or the original filename.
+            </summary>
+        </member>
+        <member name="M:Westwind.plUpload.plUploadFileHandler.OnUploadChunk(System.IO.Stream,System.Int32,System.Int32,System.String)">
+            <summary>
+            Stream each chunk to a file and effectively append it. 
+            </summary>
+            <param name="chunkStream"></param>
+            <param name="chunk"></param>
+            <param name="chunks"></param>
+            <param name="uploadedFilename"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Westwind.plUpload.plUploadFileHandler.FileUploadPhysicalPath">
+            <summary>
+            Physical folder location where the file will be uploaded.
+            
+            Note that you can assign an IIS virtual path (~/path)
+            to this property, which automatically translates to a 
+            physical path.
+            </summary>
+        </member>
+        <member name="T:plUploadHandler.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.UnableToWriteOutFile">
+            <summary>
+              Looks up a localized string similar to Unable to write out file..
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.UploadDirectoryDoesnTExistAndCouldnTCreate">
+            <summary>
+              Looks up a localized string similar to Upload directory doesn&apos;t exist and couldn&apos;t create directory..
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.UploadedFileIsTooLarge">
+            <summary>
+              Looks up a localized string similar to Uploaded file is too large..
+            </summary>
+        </member>
+    </members>
+</doc>

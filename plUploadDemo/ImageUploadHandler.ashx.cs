@@ -20,7 +20,7 @@ namespace plupload
     /// </summary>
     public class ImageUploadHandler : plUploadFileHandler
     {
-        const string ImageStoragePath = "~/UploadedImages";        
+        const string ImageStoragePath = "~/UploadedImages";
         public static int ImageHeight = 480;
 
         public ImageUploadHandler()
@@ -28,6 +28,47 @@ namespace plupload
             // Normally you'd set these values from config values
             FileUploadPhysicalPath = "~/tempuploads";
             MaxUploadSize = 2000000;
+        }
+
+        protected override void OnUploadCompleted(string fileName)
+        {
+            var Server = Context.Server;
+
+            // Physical Path is auto-transformed
+            var path = FileUploadPhysicalPath;
+            var fullUploadedFileName = Path.Combine(path, fileName);
+
+
+            var ext = Path.GetExtension(fileName).ToLower();
+            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")
+            {
+                WriteErrorResponse("Invalid file format uploaded.");
+                return;
+            }
+
+            // Typically you'd want to ensure that the filename is unique
+            // Some ID from the database to correlate - here I use a static img_ prefix
+            string generatedFilename = "img_" + fileName;
+
+
+            try
+            {
+                // resize the image and write out in final image folder
+                ResizeImage(fullUploadedFileName, Server.MapPath("~/uploadedImages/" + generatedFilename), ImageHeight);
+
+                // delete the temp file
+                File.Delete(fullUploadedFileName);
+            }
+            catch (Exception ex)
+            {
+                WriteErrorResponse("Unable to write out uploaded file: " + ex.Message);
+                return;
+            }
+
+            string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
+
+            // return just a string that contains the url path to the file
+            WriteUploadCompletedMessage(finalImageUrl);
         }
 
         protected override bool OnUploadStarted(int chunk, int chunks, string name)
@@ -38,7 +79,7 @@ namespace plupload
             // clean out final image folder too
             DeleteTimedoutFiles(Path.Combine(Context.Server.MapPath(ImageStoragePath), "*.*"), 900);
 
-            return base.OnUploadStarted(chunk, chunks,name);            
+            return base.OnUploadStarted(chunk, chunks, name);
         }
 
         // these aren't needed in this example and with files in general
@@ -55,47 +96,7 @@ namespace plupload
         //    return true;
         //}
 
-        protected override void OnUploadCompleted(string fileName)
-        {
-            var Server = Context.Server;
 
-            // Physical Path is auto-transformed
-            var path = FileUploadPhysicalPath;
-            var fullUploadedFileName = Path.Combine(path, fileName);
-
-            
-            var ext = Path.GetExtension(fileName).ToLower();
-            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")            
-            {
-                WriteErrorResponse("Invalid file format uploaded.");
-                return;
-            }
-
-            // Typically you'd want to ensure that the filename is unique
-            // Some ID from the database to correlate - here I use a static img_ prefix
-            string generatedFilename = "img_" + fileName;
-
-            
-            try
-            {
-                // resize the image and write out in final image folder
-                ResizeImage(fullUploadedFileName,  Server.MapPath("~/uploadedImages/"+ generatedFilename), ImageHeight);
-                
-                // delete the temp file
-                File.Delete(fullUploadedFileName);
-            }
-            catch(Exception ex)
-            {
-                WriteErrorResponse("Unable to write out uploaded file: " + ex.Message);
-                return;
-            }
-
-            string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
-
-            // return just a string that contains the virtual path to the file
-            Response.Write(finalImageUrl);
-            //Response.End();
-        }
 
 
         #region Sample Helpers
@@ -159,15 +160,15 @@ namespace plupload
 
                 ratio = (decimal)height / bmp.Height;
                 newHeight = height;
-                newWidth = Convert.ToInt32( bmp.Width * ratio );
-                
+                newWidth = Convert.ToInt32(bmp.Width * ratio);
+
 
                 bmpOut = new Bitmap(newWidth, newHeight);
                 Graphics g = Graphics.FromImage(bmpOut);
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.FillRectangle(Brushes.White, 0, 0, newWidth, newHeight);
                 g.DrawImage(bmp, 0, 0, newWidth, newHeight);
-                
+
                 bmp.Dispose();
 
                 bmpOut.Save(outputFilename, format);

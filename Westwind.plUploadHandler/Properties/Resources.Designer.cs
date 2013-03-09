@@ -61,6 +61,15 @@ namespace plUploadHandler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to write out file..
+        /// </summary>
+        internal static string UnableToWriteOutFile {
+            get {
+                return ResourceManager.GetString("UnableToWriteOutFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload directory doesn&apos;t exist and couldn&apos;t create directory..
         /// </summary>
         internal static string UploadDirectoryDoesnTExistAndCouldnTCreate {

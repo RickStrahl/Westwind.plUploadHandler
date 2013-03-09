@@ -1,15 +1,12 @@
-var page = {}
-page.fileCount = 0;
-
 $(document).ready(function () {
     // initialize status bar
     showStatus({ autoClose: true });
 
     $("#Uploader").pluploadQueue({
-        runtimes: 'silverlight,flash,html4',  // html5,
+        runtimes: 'html5,silverlight,flash,html4',
         url: 'ImageUploadHandler.ashx',
         max_file_size: '1mb',
-        chunk_size: '100kb',
+        chunk_size: '65kb',
         unique_names: false,
         // Resize images on clientside if we can
         resize: { width: 800, height: 600, quality: 90 },
@@ -17,7 +14,7 @@ $(document).ready(function () {
         filters: [{ title: "Image files", extensions: "jpg,jpeg,gif,png" }],
         flash_swf_url: 'scripts/plupload/plupload.flash.swf',
         silverlight_xap_url: 'scripts/plupload/plupload.silverlight.xap',
-        multiple_queues: true,
+        multiple_queues: true
     });
 
     // get uploader instance
@@ -35,23 +32,30 @@ $(document).ready(function () {
         var imageUrl = response.response;
 
         $("<img>").attr({ src: imageUrl })
-                  .click(function () {
-                      $("#ImageView").attr("src", imageUrl);
-                      setTimeout(function () {
-                          $("#ImagePreview").modalDialog()
-                                            .closable()
-                                            .draggable();
-                          $("#_ModalOverlay").click(function () {
-                              $("#ImagePreview").modalDialog("hide");
-                          });
-                      }, 200);
-                  })
-                  .appendTo($("#ImageContainer"));
+                    .click(function () {
+                        $("#ImageView").attr("src", imageUrl);
+                        setTimeout(function () {
+                            var ip = $("#ImagePreview");
+                            
+                            // show as overlay
+                            ip.fadeIn("slow")
+                              .modalDialog()
+                              .closable()
+                              .draggable();
+
+                            // close the modal by clicking on the overlay
+                            $("#_ModalOverlay").click(function () {
+                                $("#ImagePreview").modalDialog("hide");
+                            });
+                        }, 200);
+                    })
+                    .appendTo($("#ImageContainer"));
     });
 
     // Error handler displays client side errors and transfer errors
     // when you click on the error icons
     uploader.bind("Error", function (upload, error) {
+        debugger;
         showStatus(error.message,3000,true);
     });
 
@@ -69,7 +73,9 @@ $(document).ready(function () {
     //so if you want to do this you have to directly manipulate the DOM
     setTimeout(function () {
         $(".plupload_header_title").text("Upload Images")
-        $(".plupload_header_text").html("Add images to upload and click start. Images are resized to 600 pixels height and can't be larger than 1 meg. &nbsp;&nbsp; <small><a href='@Url.Action(\"upload\", new { entryId=Model.Entry.DisplayId, classic=true })' target='Content' style='color: white;text-decoration:underline'>Problems? Use the simple uploader</a></small>")
+        $(".plupload_header_text").html("Add images to upload and click start. Images are resized to 600 pixels height and can't be larger than 1 meg.")
     }, 200);
 
 });
+
+

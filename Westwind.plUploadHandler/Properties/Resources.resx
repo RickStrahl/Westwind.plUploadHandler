@@ -105,4 +105,8 @@
     <value>Uploaded file is too large.</value>
     <comment>UploadedFileIsTooLarge description</comment>
   </data>
+  <data name="UnableToWriteOutFile" xml:space="preserve">
+    <value>Unable to write out file.</value>
+    <comment>UnableToWriteOutFile description</comment>
+  </data>
 </root>

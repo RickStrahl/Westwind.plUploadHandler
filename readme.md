@@ -21,7 +21,10 @@ folder read/write/create access for the user account the IIS
 Application Pool is running under. You can find this account in the
 your site/virtual's Application Pool's Advanced settings.
 
-###How to implement the Server Side Handlers###
+###How to implement a plUpload Image Uploader Example###
+If you want the long version of this example, go check the blog post - 
+there's a lot more info. Here is just a short summary of what you need to know.
+
 plUpload is a client component. This library provides the server side
 component that receives the clients upload chunks.
 
@@ -175,5 +178,9 @@ public class ImageUploadHandler : plUploadFileHandler
 }
 ```
 
-That's all that's needed... if there's an error you want to return, call WriteErrorResponse() with
+That's all that's needed... 
+
+The OnUploadCompleted() should Response.Write
+
+if there's an error you want to return, call WriteErrorResponse() with
 an error message, which is then sent to the client which can echo the method.

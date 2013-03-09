@@ -5,7 +5,8 @@
     <link href="Css/Reset.css" rel="stylesheet" type="text/css" />
     <link href="Css/Standard.css" rel="stylesheet" type="text/css" />        
 
-    <link href="scripts/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css" rel="stylesheet"
+    <link href="scripts/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css" 
+          rel="stylesheet"
           type="text/css" />
   
     <style>
@@ -27,12 +28,12 @@
             position: absolute; 
             border-radius: 8px;            
         }
-        #ImagePreview img{                        
+        #ImagePreview img{    
+                                
         }
     </style>
 </head>
-<body>
-    <form id="form1" runat="server">
+<body>    
     <h1>plUpload Image Upload Demo</h1>
     <div class="toolbarcontainer">
         <a href="UploadImages.htm" class="hoverbutton"><span class="icon-refresh"></span> Refresh</a>
@@ -48,7 +49,6 @@
     <div class="containercontent">
     
         <div id="ImageContainer">
-               
         </div>
 
         <div id="Uploader">        
@@ -60,6 +60,7 @@
 
     </div>
 
+    
     <script src="scripts/jquery.min.js"></script>
 
     <script src="scripts/plupload/plupload.full.js"></script>    
@@ -70,7 +71,6 @@
         
     <!-- page specific JavaScript that puts up plUpload component -->
     <script src="UploadImages.js"></script>
-
-    </form>
+    
 </body>
 </html>

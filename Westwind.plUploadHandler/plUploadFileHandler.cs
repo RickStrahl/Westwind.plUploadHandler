@@ -59,7 +59,7 @@ namespace Westwind.plUpload
                 {
                     Directory.CreateDirectory(path);
                 }
-                catch (Exception ex)
+                catch
                 {
                     WriteErrorResponse(Resources.UploadDirectoryDoesnTExistAndCouldnTCreate);
                     return false;
