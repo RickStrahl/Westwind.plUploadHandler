@@ -50,11 +50,12 @@ namespace plupload
             // Some ID from the database to correlate - here I use a static img_ prefix
             string generatedFilename = "img_" + fileName;
 
+            string imagePath = Server.MapPath(ImageStoragePath);
 
             try
             {
                 // resize the image and write out in final image folder
-                ResizeImage(fullUploadedFileName, Server.MapPath("~/uploadedImages/" + generatedFilename), ImageHeight);
+                ResizeImage(fullUploadedFileName, Path.Combine(imagePath, generatedFilename), ImageHeight);
 
                 // delete the temp file
                 File.Delete(fullUploadedFileName);
@@ -65,7 +66,8 @@ namespace plupload
                 return;
             }
 
-            string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
+            string relativePath = VirtualPathUtility.ToAbsolute(ImageStoragePath);
+            string finalImageUrl = relativePath + "/" + generatedFilename;
 
             // return just a string that contains the url path to the file
             WriteUploadCompletedMessage(finalImageUrl);

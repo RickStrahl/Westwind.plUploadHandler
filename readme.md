@@ -12,6 +12,7 @@ when it completes.
 
 * [plUpload Website](http://www.plupload.com/)
 * [Using the plUpload Component Blog Post](http://www.west-wind.com/weblog/posts/2013/Mar/12/Using-plUpload-to-upload-Files-with-ASPNET)
+* [Online Sample](http://www.west-wind.com/tools/samples/pluploaddemo/UploadImages.htm)
 
 ### Sample Web Project Configuration###
 The Web application sample is an image uploader that stores images to file.
@@ -125,7 +126,7 @@ the full URL to the newly uploaded and resized image:
 ```C#
 public class ImageUploadHandler : plUploadFileHandler
 {
-    const string ImageStoragePath = "~/UploadedImages";        
+    const string ImageStoragePath = "~/UploadedImages";
     public static int ImageHeight = 480;
 
     public ImageUploadHandler()
@@ -133,7 +134,7 @@ public class ImageUploadHandler : plUploadFileHandler
         // Normally you'd set these values from config values
         FileUploadPhysicalPath = "~/tempuploads";
         MaxUploadSize = 2000000;
-    }       
+    }
 
     protected override void OnUploadCompleted(string fileName)
     {
@@ -143,9 +144,9 @@ public class ImageUploadHandler : plUploadFileHandler
         var path = FileUploadPhysicalPath;
         var fullUploadedFileName = Path.Combine(path, fileName);
 
-            
+
         var ext = Path.GetExtension(fileName).ToLower();
-        if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")            
+        if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")
         {
             WriteErrorResponse("Invalid file format uploaded.");
             return;
@@ -154,33 +155,58 @@ public class ImageUploadHandler : plUploadFileHandler
         // Typically you'd want to ensure that the filename is unique
         // Some ID from the database to correlate - here I use a static img_ prefix
         string generatedFilename = "img_" + fileName;
-            
+
+        string imagePath = Server.MapPath(ImageStoragePath);
+
         try
         {
             // resize the image and write out in final image folder
-            ResizeImage(fullUploadedFileName, Server.MapPath("~/uploadedImages/"+ generatedFilename), ImageHeight);
-                
+            ResizeImage(fullUploadedFileName, Path.Combine(imagePath, generatedFilename), ImageHeight);
+
             // delete the temp file
             File.Delete(fullUploadedFileName);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             WriteErrorResponse("Unable to write out uploaded file: " + ex.Message);
             return;
         }
 
-        string finalImageUrl = Request.ApplicationPath + "/uploadedImages/" + generatedFilename;
+        string relativePath = VirtualPathUtility.ToAbsolute(ImageStoragePath);
+        string finalImageUrl = relativePath + "/" + generatedFilename;
 
-        // return something that makes sense to your front-end UI
-        // here I return the URL to the image.
-        Response.Write(finalImageUrl);
+        // return just a string that contains the url path to the file
+        WriteUploadCompletedMessage(finalImageUrl);
     }
 }
 ```
 
 That's all that's needed... 
 
-The OnUploadCompleted() should Response.Write
+The only requirement of the OnUploadCompleted() is to eventually call the WriteUploadCompletedMessage() 
+at the end of the call  to send back a message to the client. If the upload is call and forget this isn't 
+necessary, but here the example returns the URL of the resized image which is picked up by the plUpload
+client and then used to create an image tag that displays the image in a preview.
 
-if there's an error you want to return, call WriteErrorResponse() with
-an error message, which is then sent to the client which can echo the method.
+If your code has an error condition - like the check for invalid file formats in the code above - use
+WriteErrorResponse() instead to fail the request.
+
+There are additional events that you can trap. For example, in this particular example I also override
+the OnUploadStarted method to delete timed out files: 
+
+```C#
+protected override bool OnUploadStarted(int chunk, int chunks, string name)
+{
+    // time out files after 15 minutes - temporary upload files
+    DeleteTimedoutFiles(Path.Combine(FileUploadPhysicalPath, "*.*"), 900);
+
+    // clean out final image folder too
+    DeleteTimedoutFiles(Path.Combine(Context.Server.MapPath(ImageStoragePath), "*.*"), 900);
+
+    return base.OnUploadStarted(chunk, chunks, name);
+}
+```
+
+Other 'event hook methods' include OnUploadChunkStarted(), OnUploadChunk() which allow capturing the
+uploaded data as it comes in from plUpload, one chunk at a time.
+
