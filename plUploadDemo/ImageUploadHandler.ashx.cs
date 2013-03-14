@@ -28,6 +28,7 @@ namespace plupload
             // Normally you'd set these values from config values
             FileUploadPhysicalPath = "~/tempuploads";
             MaxUploadSize = 2000000;
+            AllowedExtensions = ".jpg,.jpeg,.png,.gif,.bmp";
         }
 
         protected override void OnUploadCompleted(string fileName)
@@ -37,14 +38,6 @@ namespace plupload
             // Physical Path is auto-transformed
             var path = FileUploadPhysicalPath;
             var fullUploadedFileName = Path.Combine(path, fileName);
-
-
-            var ext = Path.GetExtension(fileName).ToLower();
-            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".gif")
-            {
-                WriteErrorResponse("Invalid file format uploaded.");
-                return;
-            }
 
             // Typically you'd want to ensure that the filename is unique
             // Some ID from the database to correlate - here I use a static img_ prefix

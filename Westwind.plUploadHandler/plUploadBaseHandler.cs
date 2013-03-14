@@ -38,6 +38,13 @@ namespace Westwind.plUpload
         /// </summary>
         protected int MaxUploadSize = 0;
 
+        /// <summary>
+        /// Comma delimited list of extensions allowed,
+        /// extension preceded by a dot.
+        /// Example: .jpg,.png
+        /// </summary>
+        protected string AllowedExtensions = ".jpg,.jpeg,.png,.gif,.bmp";
+
 
         public void ProcessRequest(HttpContext context)
         {
@@ -51,24 +58,22 @@ namespace Westwind.plUpload
                 HttpPostedFile fileUpload = Request.Files[0];
 
                 string fileName = Request["name"] ?? string.Empty;
-
                 string tstr = Request["chunks"] ?? string.Empty;
                 int chunks = -1;
                 if (!int.TryParse(tstr, out chunks))
                     chunks = -1;
-
                 tstr = Request["chunk"] ?? string.Empty;
                 int chunk = -1;
                 if (!int.TryParse(tstr, out chunk))
                     chunk = -1;
 
                 // If there are no chunks sent the file is sent as one 
-                // single chunk
+                // this likely a plain HTML 4 upload (ie. 1 single file)
                 if (chunks == -1)
                 {
                     if (MaxUploadSize == 0 || Request.ContentLength <= MaxUploadSize)
                     {
-                        if (!OnUploadChunk(fileUpload.InputStream, 0, 1, fileName))
+                        if (!OnUploadChunk(fileUpload.InputStream, 0, 1, fileUpload.FileName))
                             return;
                     }
                     else
@@ -86,10 +91,17 @@ namespace Westwind.plUpload
                     // this isn't exact! We can't see the full size of the upload
                     // and don't know the size of the large chunk
                     if (chunk == 0 && Request.ContentLength * (chunks - 1) > MaxUploadSize)
-                        WriteErrorResponse("Uploaded file is too large.", 413);
+                        WriteErrorResponse(Resources.UploadedFileIsTooLarge, 413);
                 }
 
 
+                // check for allowed extensions and block
+                string ext = Path.GetExtension(fileName);
+                if (!("," + AllowedExtensions.ToLower() + ",").Contains("," + ext.ToLower() + ","))
+                {
+                    WriteErrorResponse(Resources.InvalidFileExtensionUploaded);
+                    return;
+                }
 
                 if (!OnUploadChunkStarted(chunk, chunks, fileName))
                     return;

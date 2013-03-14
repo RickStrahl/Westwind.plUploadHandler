@@ -24,6 +24,13 @@
             default: 0 = unlimited
             </summary>
         </member>
+        <member name="F:Westwind.plUpload.plUploadBaseHandler.AllowedExtensions">
+            <summary>
+            Comma delimited list of extensions allowed,
+            extension preceded by a dot.
+            Example: .jpg,.png
+            </summary>
+        </member>
         <member name="M:Westwind.plUpload.plUploadBaseHandler.WriteErrorResponse(System.String,System.Int32,System.Boolean)">
             <summary>
             Writes out an error response
@@ -140,6 +147,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:plUploadHandler.Properties.Resources.InvalidFileExtensionUploaded">
+            <summary>
+              Looks up a localized string similar to Invalid file extension uploaded..
             </summary>
         </member>
         <member name="P:plUploadHandler.Properties.Resources.UnableToWriteOutFile">

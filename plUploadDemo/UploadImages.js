@@ -6,7 +6,7 @@ $(document).ready(function () {
         runtimes: 'html5,silverlight,flash,html4',
         url: 'ImageUploadHandler.ashx',
         max_file_size: '1mb',
-        chunk_size: '65kb',
+        chunk_size: '64kb',
         unique_names: false,
         // Resize images on clientside if we can
         resize: { width: 800, height: 600, quality: 90 },

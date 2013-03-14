@@ -109,4 +109,12 @@
     <value>Unable to write out file.</value>
     <comment>UnableToWriteOutFile description</comment>
   </data>
+  <data name="InvalidFileExtensionUploaded" xml:space="preserve">
+    <value>Invalid file extension uploaded.</value>
+    <comment>InvalidFileExtensionUploaded description</comment>
+  </data>
+  <data name="UploadedFileIsTooLarge" xml:space="preserve">
+    <value>Uploaded file is too large.</value>
+    <comment>UploadedFileIsTooLarge description</comment>
+  </data>
 </root>
