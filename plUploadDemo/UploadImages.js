@@ -5,7 +5,7 @@ $(document).ready(function () {
     $("#Uploader").pluploadQueue({
         runtimes: 'html5,silverlight,flash,html4',
         url: 'ImageUploadHandler.ashx',
-        max_file_size: '1mb',
+        max_file_size: '2mb',
         chunk_size: '64kb',
         unique_names: false,
         // Resize images on clientside if we can
@@ -19,6 +19,14 @@ $(document).ready(function () {
 
     // get uploader instance
     var uploader = $("#Uploader").pluploadQueue();      
+
+
+    $("#btnStopUpload").click(function () {
+        uploader.stop();
+    });
+    $("#btnStartUpload").click(function () {
+        uploader.start();
+    });
 
     // bind uploaded event and display the image
     // response.response returns the last response from server
@@ -54,8 +62,7 @@ $(document).ready(function () {
 
     // Error handler displays client side errors and transfer errors
     // when you click on the error icons
-    uploader.bind("Error", function (upload, error) {
-        debugger;
+    uploader.bind("Error", function (upload, error) {        
         showStatus(error.message,3000,true);
     });
 

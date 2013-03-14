@@ -84,6 +84,8 @@
     <Content Include="Css\Images\warning.gif" />
     <Content Include="Css\Reset.css" />
     <Content Include="Css\Standard.css" />
+    <Content Include="Scripts\plupload\plupload.full.js" />
+    <Content Include="Scripts\plupload\plupload.full.source.js" />
     <Content Include="Scripts\plupload\jquery.plupload.queue\jquery.plupload.queue.js" />
     <Content Include="Scripts\ww.jquery.min.js">
       <DependentUpon>ww.jquery.js</DependentUpon>
@@ -101,7 +103,6 @@
     <Content Include="Scripts\plupload\jquery.plupload.queue\img\throbber.gif" />
     <Content Include="Scripts\plupload\jquery.plupload.queue\img\transp50.png" />
     <Content Include="Scripts\plupload\plupload.flash.swf" />
-    <Content Include="Scripts\plupload\plupload.full.js" />
     <Content Include="Scripts\plupload\plupload.silverlight.xap" />
     <Content Include="Scripts\ww.jquery.js" />
     <Content Include="Scripts\_references.js" />
