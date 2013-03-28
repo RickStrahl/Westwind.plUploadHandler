@@ -26,7 +26,6 @@ namespace Westwind.plUpload
         protected HttpResponse Response;
         protected HttpRequest Request;
 
-
         public bool IsReusable
         {
             get { return false; }
@@ -90,7 +89,7 @@ namespace Westwind.plUpload
                 {
                     // this isn't exact! We can't see the full size of the upload
                     // and don't know the size of the large chunk
-                    if (chunk == 0 && Request.ContentLength * (chunks - 1) > MaxUploadSize)
+                    if (chunk == 0 && MaxUploadSize > 0 && Request.ContentLength * (chunks - 1) > MaxUploadSize)
                         WriteErrorResponse(Resources.UploadedFileIsTooLarge, 413);
                 }
 
