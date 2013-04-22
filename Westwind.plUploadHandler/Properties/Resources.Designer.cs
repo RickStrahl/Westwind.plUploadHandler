@@ -70,6 +70,15 @@ namespace plUploadHandler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid filename.
+        /// </summary>
+        internal static string InvalidFilename {
+            get {
+                return ResourceManager.GetString("InvalidFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to write out file..
         /// </summary>
         internal static string UnableToWriteOutFile {

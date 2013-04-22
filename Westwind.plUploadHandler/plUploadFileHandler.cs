@@ -66,6 +66,10 @@ namespace Westwind.plUpload
                 }
             }
 
+            // ensure that the filename is normalized and doesn't contain
+            // any path traversal hacks
+            uploadedFilename = Path.GetFileName(uploadedFilename);
+
             string uploadFilePath = Path.Combine(path, uploadedFilename);
             if (chunk == 0)
             {

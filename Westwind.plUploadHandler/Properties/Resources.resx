@@ -117,4 +117,8 @@
     <value>Uploaded file is too large.</value>
     <comment>UploadedFileIsTooLarge description</comment>
   </data>
+  <data name="InvalidFilename" xml:space="preserve">
+    <value>Invalid filename</value>
+    <comment>InvalidFilename description</comment>
+  </data>
 </root>

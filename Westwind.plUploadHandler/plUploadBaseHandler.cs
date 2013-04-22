@@ -56,7 +56,15 @@ namespace Westwind.plUpload
             {
                 HttpPostedFile fileUpload = Request.Files[0];
 
-                string fileName = Request["name"] ?? string.Empty;
+                string fileName =fileUpload.FileName;
+                if (string.IsNullOrEmpty(fileName))
+                    fileName = Request["name"] ?? string.Empty;
+
+                // normalize file name to avoid directory traversal attacks
+                // always strip any paths
+                fileName = Path.GetFileName(fileName);
+
+
                 string tstr = Request["chunks"] ?? string.Empty;
                 int chunks = -1;
                 if (!int.TryParse(tstr, out chunks))
@@ -72,7 +80,7 @@ namespace Westwind.plUpload
                 {
                     if (MaxUploadSize == 0 || Request.ContentLength <= MaxUploadSize)
                     {
-                        if (!OnUploadChunk(fileUpload.InputStream, 0, 1, fileUpload.FileName))
+                        if (!OnUploadChunk(fileUpload.InputStream, 0, 1, fileName))
                             return;
                     }
                     else
