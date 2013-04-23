@@ -154,6 +154,11 @@
               Looks up a localized string similar to Invalid file extension uploaded..
             </summary>
         </member>
+        <member name="P:plUploadHandler.Properties.Resources.InvalidFilename">
+            <summary>
+              Looks up a localized string similar to Invalid filename.
+            </summary>
+        </member>
         <member name="P:plUploadHandler.Properties.Resources.UnableToWriteOutFile">
             <summary>
               Looks up a localized string similar to Unable to write out file..
