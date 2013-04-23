@@ -10,7 +10,8 @@ when it completes.
 
 ###Resources:###
 
-* [plUpload Website](http://www.plupload.com/)
+* [plUpload Component Website](http://www.plupload.com/)
+* [Get it from NuGet](https://nuget.org/packages/Westwind.plUploadHandler/)
 * [Using the plUpload Component Blog Post](http://www.west-wind.com/weblog/posts/2013/Mar/12/Using-plUpload-to-upload-Files-with-ASPNET)
 * [Online Sample](http://www.west-wind.com/tools/samples/pluploaddemo/UploadImages.htm)
 
@@ -21,6 +22,17 @@ If you plan on using a full version of IIS make sure you create the
 folder read/write/create access for the user account the IIS 
 Application Pool is running under. You can find this account in the
 your site/virtual's Application Pool's Advanced settings.
+
+### Installation from NuGet
+You can easily install this component from NuGet using the Package Manager Console
+or the interactive NuGet manager in Visual Studio..
+
+PM> install-package Westwind.plUploadHandler
+
+The package installs the handler assembly and default plUpload scripts
+in the scripts/plUpload folder. All you have to do to use the component
+then is to reference the scripts in your upload page and configure the
+client component and server handler as described below.
 
 ###How to implement a plUpload Image Uploader Example###
 If you want the long version of this example, go check the blog post - 

@@ -84,6 +84,7 @@
     <Content Include="Css\Images\warning.gif" />
     <Content Include="Css\Reset.css" />
     <Content Include="Css\Standard.css" />
+    <Content Include="plupload_logo.png" />
     <Content Include="Scripts\plupload\plupload.full.js" />
     <Content Include="Scripts\plupload\plupload.full.source.js" />
     <Content Include="Scripts\plupload\jquery.plupload.queue\jquery.plupload.queue.js" />
