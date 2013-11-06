@@ -102,7 +102,7 @@ public abstract class plUploadBaseHandler : IHttpHandler
             else
             {
                 // this isn't exact! We can't see the full size of the upload
-                // and don't know the size of the large chunk
+                // and don't know the size of the last chunk
                 if (chunk == 0 && MaxUploadSize > 0 && Request.ContentLength * (chunks - 1) > MaxUploadSize)
                     WriteErrorResponse(Resources.UploadedFileIsTooLarge, 413);
             }
@@ -121,7 +121,7 @@ public abstract class plUploadBaseHandler : IHttpHandler
                 return;
 
             // last chunk
-            if (chunk == chunks - 1)
+            if (chunk => chunks - 1)
             {
                 // final response should just return
                 // the output you generate
