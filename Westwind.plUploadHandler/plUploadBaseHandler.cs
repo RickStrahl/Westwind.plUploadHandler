@@ -121,7 +121,7 @@ public abstract class plUploadBaseHandler : IHttpHandler
                 return;
 
             // last chunk
-            if (chunk => chunks - 1)
+            if (chunk >= chunks - 1)
             {
                 // final response should just return
                 // the output you generate
