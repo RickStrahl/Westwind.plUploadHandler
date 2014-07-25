@@ -57,7 +57,7 @@ public abstract class plUploadBaseHandler : IHttpHandler
             HttpPostedFile fileUpload = Request.Files[0];
 
             string fileName = fileUpload.FileName;
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName) || string.Equals(fileName,"blob"))
                 fileName = Request["name"] ?? string.Empty;
 
             // normalize file name to avoid directory traversal attacks            
