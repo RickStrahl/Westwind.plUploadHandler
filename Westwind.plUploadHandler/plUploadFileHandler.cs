@@ -96,5 +96,14 @@ namespace Westwind.plUpload
 
             return true;
         }
+
+        /// <summary>
+        /// Puts the filename in the response
+        /// </summary>
+        /// <param name="fileName"></param>
+        protected override void OnUploadCompleted(string fileName)
+        {
+            WriteSucessResponse(fileName);
+        }
     }
 }
